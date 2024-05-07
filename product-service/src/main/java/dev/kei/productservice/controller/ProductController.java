@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.kei.productservice.dto.ProductRequest;
 import dev.kei.productservice.dto.ProductResponse;
 import dev.kei.productservice.service.ProductService;
+import dev.kei.productservice.util.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -39,17 +40,38 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public Optional<ProductResponse> getProductById(@PathVariable(name = "id") String id) {
-        return productService.getProductById(id);
+
+        Optional<ProductResponse> product = productService.getProductById(id);
+        if (!product.isPresent()) {
+            String message = "Product with id `" + id + "` not found";
+            System.out.println(message);
+            throw new ResourceNotFoundException(message);
+        }
+        return product;
     }
 
     @PutMapping("/{id}")
-    public ProductResponse updateProduct(@PathVariable String id, @RequestBody ProductRequest product) {
-        return productService.updateProduct(id, product);
+    public ProductResponse updateProduct(@PathVariable String id, @RequestBody ProductRequest productRequest) {
+
+        Optional<ProductResponse> product = productService.getProductById(id);
+        if (!product.isPresent()) {
+            String message = "Product with id `" + id + "` not found";
+            throw new ResourceNotFoundException(message);
+        }
+
+        return productService.updateProduct(id, productRequest);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable String id) {
+
+        Optional<ProductResponse> product = productService.getProductById(id);
+        if (!product.isPresent()) {
+            String message = "Product with id `" + id + "` not found";
+            throw new ResourceNotFoundException(message);
+        }
+
         productService.deleteProduct(id);
     }
 }
