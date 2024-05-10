@@ -11,8 +11,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import dev.kei.inventoryservice.dto.InventoryResponse;
 import dev.kei.inventoryservice.model.Inventory;
 import dev.kei.inventoryservice.repository.InventoryRepository;
 
