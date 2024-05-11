@@ -33,12 +33,10 @@ public class OrderService {
         List<String> skuCodes = order.getOrderItemsList().stream().map(OrderItems::getSkuCode).toList();
 
         // check order items is in stock in inventory service
-        InventoryResponse[] inventoryResponses = webClientBuilder.build().get().uri("http://localhost:8082/api/v1/inventory",
+        InventoryResponse[] inventoryResponses = webClientBuilder.build().get().uri("http://inventory-service/api/v1/inventory",
                 uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build()).retrieve().bodyToMono(InventoryResponse[].class).block();
         if (inventoryResponses != null && inventoryResponses.length > 0) {
             Boolean isInStock = Arrays.stream(inventoryResponses).allMatch(InventoryResponse::isInStock);
-
-
             if (isInStock) {
                 orderRepository.save(order);
             } else {
