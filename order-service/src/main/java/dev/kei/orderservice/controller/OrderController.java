@@ -43,4 +43,5 @@ public class OrderController {
         log.info("Calling fallback method for save order post method");
         return CompletableFuture.supplyAsync(() -> OrderResponse.builder().message("Oops! Something went wrong. Please try again later.").code(500).build());
     }
+
 }
